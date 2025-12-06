@@ -8,6 +8,9 @@ interface OrderItem {
 
 // 1️⃣ Create transporter
 const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,     // e.g. "smtp.gmail.com" or other host
+  port: 587,                        // try 587 (TLS) — safer than 465
+  secure: false,
   service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
