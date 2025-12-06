@@ -10,9 +10,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Build outputs
-dist/
-build/
+
 
 # Temporary files
 .DS_Store
