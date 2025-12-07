@@ -21,21 +21,34 @@ app.use(express.json());
 
 
  const path = require('path');
-// Serve static files from React build
-app.use(express.static(path.join(__dirname,'..', 'build')));
 
-// For any other route, serve index.html (for frontend routing)
-app.get(/^(.*)$/, (req, res) => {
-  res.sendFile(path.join(__dirname,'..', 'build', 'index.html'));
-});
+
+connectDB();
+app.use('/api/auth', authRoutes);
+app.use('/api/cart', cartRoutes);
+// app.use('/api/cart', (req, res, next) => {
+//   console.log('Cart route hit:', req.method, req.path);
+//   next();
+// }, cartRoutes);
+app.use('/api/orders', orderRoutes);
+
 app.get('/', (req, res) => {
   res.send('Backend is alive');
 });
+const buildPath = path.join(__dirname, '..', 'build');
+app.use(express.static(buildPath));
 
-connectDB();
-app.use('/api', authRoutes);
-app.use('/api/cart', cartRoutes);
-app.use('/api/orders', orderRoutes);
+app.get(/^(?!\/api\/).*$/, (req, res) => {
+  res.sendFile(path.join(buildPath, 'index.html'));
+});
+// Serve static files from React build
+// app.use(express.static(path.join(__dirname,'build')));
+
+// For any other route, serve index.html (for frontend routing)
+// app.get(/^(.*)$/, (req, res) => {
+  // res.sendFile(path.join(__dirname,'build', 'index.html'));
+// });
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
