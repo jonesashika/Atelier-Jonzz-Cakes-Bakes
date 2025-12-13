@@ -107,6 +107,9 @@ interface OrderItem {
   name: string;
   priceAtPurchase: number;
   quantity: number;
+  sizeKg?: number;
+  toppings?: string[];
+  cakeMessage?: string;
 }
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
@@ -118,7 +121,15 @@ export async function sendOrderEmail(
   customerName: string
 ) {
   const itemsHtml = items
-    .map((i) => `<li>${i.name} — ₹${i.priceAtPurchase} × ${i.quantity}</li>`)
+    .map((i) => ` <li style="margin-bottom: 10px;">
+      <strong>${i.name}</strong><br/>
+      Price: ₹${i.priceAtPurchase} × ${i.quantity}<br/>
+      ${i.sizeKg ? `Size: ${i.sizeKg} Kg<br/>` : ""}
+      ${i.toppings && i.toppings.length
+        ? `Toppings: ${i.toppings.join(", ")}<br/>`
+        : ""}
+      ${i.cakeMessage ? `Message: "${i.cakeMessage}"` : ""}
+    </li>`)
     .join("");
 
   const msg = {
@@ -140,7 +151,7 @@ export async function sendOrderEmail(
     console.log("Customer email sent:", response.statusCode);
   } catch (err) {
     console.error("Failed to send customer email:", err);
-   
+
   }
 }
 
@@ -156,8 +167,7 @@ export async function sendAdminNotificationEmail(
   const itemsHtml = items
     .map(
       (i) =>
-        `<li>${i.name} — ₹${i.priceAtPurchase} × ${i.quantity} = ₹${
-          i.priceAtPurchase * i.quantity
+        `<li>${i.name} — ₹${i.priceAtPurchase} × ${i.quantity} = ₹${i.priceAtPurchase * i.quantity
         }</li>`
     )
     .join("");

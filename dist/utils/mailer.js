@@ -108,7 +108,15 @@ mail_1.default.setApiKey(process.env.SENDGRID_API_KEY);
 function sendOrderEmail(to, items, total, customerName) {
     return __awaiter(this, void 0, void 0, function* () {
         const itemsHtml = items
-            .map((i) => `<li>${i.name} — ₹${i.priceAtPurchase} × ${i.quantity}</li>`)
+            .map((i) => ` <li style="margin-bottom: 10px;">
+      <strong>${i.name}</strong><br/>
+      Price: ₹${i.priceAtPurchase} × ${i.quantity}<br/>
+      ${i.sizeKg ? `Size: ${i.sizeKg} Kg<br/>` : ""}
+      ${i.toppings && i.toppings.length
+            ? `Toppings: ${i.toppings.join(", ")}<br/>`
+            : ""}
+      ${i.cakeMessage ? `Message: "${i.cakeMessage}"` : ""}
+    </li>`)
             .join("");
         const msg = {
             to,
