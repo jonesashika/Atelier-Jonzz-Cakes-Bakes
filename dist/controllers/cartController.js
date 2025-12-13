@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeFromCart = exports.updateQuantity = exports.getCart = exports.addToCart = void 0;
+exports.removeFromCart = exports.updateOptions = exports.updateQuantity = exports.getCart = exports.addToCart = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const Cart_1 = __importDefault(require("../models/Cart"));
 const addToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -67,6 +67,26 @@ const updateQuantity = (req, res) => __awaiter(void 0, void 0, void 0, function*
     res.json(item);
 });
 exports.updateQuantity = updateQuantity;
+const updateOptions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { productId, sizeKg, toppings, cakeMessage } = req.body;
+    const userId = req.userId;
+    if (!productId) {
+        return res.status(400).json({ message: "Invalid payload" });
+    }
+    const item = yield Cart_1.default.findOne({ userId, productId });
+    if (!item) {
+        return res.status(404).json({ message: "Item not found" });
+    }
+    if (sizeKg !== undefined)
+        item.sizeKg = sizeKg;
+    if (toppings !== undefined)
+        item.toppings = toppings;
+    if (cakeMessage !== undefined)
+        item.cakeMessage = cakeMessage;
+    yield item.save();
+    res.json(item);
+});
+exports.updateOptions = updateOptions;
 const removeFromCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { productId } = req.body;
     const userId = req.userId;

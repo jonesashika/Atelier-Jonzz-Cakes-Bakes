@@ -6,7 +6,19 @@ const cartItemSchema = new mongoose.Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true, min: 0 },
   quantity: { type: Number, required: true, min: 1 },
-  image: { type: String, required: true }
+  image: { type: String, required: true },
+    sizeKg: {
+      type: Number,
+      default: null
+    },
+    toppings: {
+      type: [String],
+      default: []
+    },
+    cakeMessage: {
+      type: String,
+      default: ""
+    }
 }, { timestamps: true });
 
 cartItemSchema.index({ userId: 1, productId: 1 }, { unique: true });

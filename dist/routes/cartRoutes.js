@@ -10,5 +10,6 @@ const router = express_1.default.Router();
 router.post('/add', auth_1.authMiddleware, cartController_1.addToCart);
 router.get('/', auth_1.authMiddleware, cartController_1.getCart);
 router.post('/update', auth_1.authMiddleware, cartController_1.updateQuantity);
+router.post('/update-options', auth_1.authMiddleware, cartController_1.updateOptions);
 router.post('/remove', auth_1.authMiddleware, cartController_1.removeFromCart);
 exports.default = router;

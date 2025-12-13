@@ -128,6 +128,26 @@ export const updateQuantity = async (req: Request, res: Response) => {
 
   res.json(item);
 };
+export const updateOptions = async (req: Request, res: Response) => {
+  const { productId, sizeKg, toppings, cakeMessage } = req.body;
+  const userId = req.userId!;
+
+  if (!productId) {
+    return res.status(400).json({ message: "Invalid payload" });
+  }
+
+  const item = await Cart.findOne({ userId, productId });
+  if (!item) {
+    return res.status(404).json({ message: "Item not found" });
+  }
+
+  if (sizeKg !== undefined) item.sizeKg = sizeKg;
+  if (toppings !== undefined) item.toppings = toppings;
+  if (cakeMessage !== undefined) item.cakeMessage = cakeMessage;
+
+  await item.save();
+  res.json(item);
+};
 
 export const removeFromCart = async (req: Request, res: Response) => {
   const { productId } = req.body;
