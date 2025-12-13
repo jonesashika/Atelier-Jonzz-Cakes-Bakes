@@ -25,13 +25,22 @@ export const placeOrder = async (req: Request, res: Response) => {
     if (cartItems.length === 0) return res.status(400).json({ message: "Cart is empty" });
 
     // Map items for order
-    const items = cartItems.map((ci) => ({
-      productId: ci.productId,
-      name: ci.name,
-      priceAtPurchase: ci.price,
-      quantity: ci.quantity,
-      image: ci.image,
-    }));
+    const items = cartItems.map((ci) => {
+      const sizeMultiplier = ci.sizeKg || 1;
+      const finalUnitPrice = ci.price * sizeMultiplier;
+
+      return {
+        productId: ci.productId,
+        name: ci.name,
+        priceAtPurchase: finalUnitPrice, // ✅ FINAL price
+        quantity: ci.quantity,
+        image: ci.image,
+        sizeKg: ci.sizeKg,
+        toppings: ci.toppings,
+        cakeMessage: ci.cakeMessage,
+      };
+    });
+
 
     const total = items.reduce((sum, i) => sum + i.priceAtPurchase * i.quantity, 0);
 
@@ -40,7 +49,7 @@ export const placeOrder = async (req: Request, res: Response) => {
 
     // Send emails asynchronously
     if (userEmail) {
-      sendOrderEmail(userEmail, items, total,name)
+      sendOrderEmail(userEmail, items, total, name)
         .then(() => console.log("Order confirmation email sent to customer"))
         .catch((err) => console.error("Customer email sending failed:", err));
 

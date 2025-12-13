@@ -36,13 +36,20 @@ const placeOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (cartItems.length === 0)
             return res.status(400).json({ message: "Cart is empty" });
         // Map items for order
-        const items = cartItems.map((ci) => ({
-            productId: ci.productId,
-            name: ci.name,
-            priceAtPurchase: ci.price,
-            quantity: ci.quantity,
-            image: ci.image,
-        }));
+        const items = cartItems.map((ci) => {
+            const sizeMultiplier = ci.sizeKg || 1;
+            const finalUnitPrice = ci.price * sizeMultiplier;
+            return {
+                productId: ci.productId,
+                name: ci.name,
+                priceAtPurchase: finalUnitPrice, // ✅ FINAL price
+                quantity: ci.quantity,
+                image: ci.image,
+                sizeKg: ci.sizeKg,
+                toppings: ci.toppings,
+                cakeMessage: ci.cakeMessage,
+            };
+        });
         const total = items.reduce((sum, i) => sum + i.priceAtPurchase * i.quantity, 0);
         // Create order
         const newOrder = yield Order_1.default.create({ userId, name, address, payment, items, total });

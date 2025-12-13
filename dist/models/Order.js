@@ -15,7 +15,10 @@ const orderSchema = new mongoose_1.default.Schema({
             name: { type: String, required: true },
             priceAtPurchase: { type: Number, required: true, min: 0 },
             quantity: { type: Number, required: true, min: 1 },
-            image: { type: String, required: true }
+            image: { type: String, required: true },
+            sizeKg: { type: Number, default: null },
+            toppings: { type: [String], default: [] },
+            cakeMessage: { type: String, default: "" }
         },
     ],
     total: { type: Number, required: true, min: 0 },
